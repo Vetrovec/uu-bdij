@@ -1,14 +1,13 @@
 package net.unicornuniversity.bdij.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import net.unicornuniversity.bdij.models.IcoData;
 
 @Entity
 @Table(name = "ico_data")
 public class IcoDataEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String ico;
@@ -141,8 +140,36 @@ public class IcoDataEntity {
     public static IcoDataEntity from(IcoData icoData)
     {
         IcoDataEntity entity = new IcoDataEntity();
-        // TODO
+
+        entity.setIco(icoData.getIco());
+        entity.setObchodniJmeno(icoData.getObchodniJmeno());
+        entity.setPravniForma(icoData.getPravniForma());
+        entity.setFinancniUrad(icoData.getFinancniUrad());
+        entity.setDatumVzniku(icoData.getDatumVzniku());
+        entity.setDatumAktualizace(icoData.getDatumAktualizace());
+        entity.setIcoId(icoData.getIcoId());
+        entity.setPrimarniZdroj(icoData.getPrimarniZdroj());
+
+        if (icoData.getAdresaDorucovaci() != null) {
+            entity.setRadekAdresy1(icoData.getAdresaDorucovaci().getRadekAdresy1());
+            entity.setRadekAdresy2(icoData.getAdresaDorucovaci().getRadekAdresy2());
+            entity.setRadekAdresy3(icoData.getAdresaDorucovaci().getRadekAdresy3());
+        }
+
+        if (icoData.getSidlo() != null) {
+            entity.setKodStatu(icoData.getSidlo().getKodStatu());
+            entity.setNazevStatu(icoData.getSidlo().getNazevStatu());
+        }
+
         return entity;
+    }
+
+    public String getIco() {
+        return ico;
+    }
+
+    public void setIco(String ico) {
+        this.ico = ico;
     }
 }
 
