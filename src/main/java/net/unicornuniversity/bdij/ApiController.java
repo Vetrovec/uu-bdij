@@ -1,7 +1,6 @@
 package net.unicornuniversity.bdij;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletRequest;
 import net.unicornuniversity.bdij.dtos.UpdateIcoDto;
 import net.unicornuniversity.bdij.entities.IcoDataEntity;
 import net.unicornuniversity.bdij.exceptions.InvalidIcoException;
@@ -18,16 +17,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.BufferedReader;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
 public class ApiController {
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @Autowired
     private IcoDataRepository icoDataRepository;
 
