@@ -167,6 +167,10 @@ public class IcoDataEntity {
             entity.setNazevStatu(icoData.getSidlo().getNazevStatu());
         }
 
+        if (icoData.getSeznamRegistraci() != null) {
+            entity.setStavZdrojeVr(icoData.getSeznamRegistraci().getStavZdrojeVr());
+        }
+
         return entity;
     }
 }

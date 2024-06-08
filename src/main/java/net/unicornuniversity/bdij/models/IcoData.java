@@ -73,6 +73,10 @@ public class IcoData {
         sidlo.setNazevStatu(icoDataEntity.getNazevStatu());
         icoData.setSidlo(sidlo);
 
+        SeznamRegistraci seznamRegistraci = new SeznamRegistraci();
+        seznamRegistraci.setStavZdrojeVr(icoDataEntity.getStavZdrojeVr());
+        icoData.setSeznamRegistraci(seznamRegistraci);
+
         return icoData;
     }
 }
