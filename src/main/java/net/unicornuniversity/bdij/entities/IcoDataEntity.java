@@ -21,6 +21,7 @@ public class IcoDataEntity {
     private String radekAdresy3;
     private String stavZdrojeVr;
     private String primarniZdroj;
+    private Boolean isDeleted = false;
 
     public String getIco() {
         return ico;
@@ -132,6 +133,14 @@ public class IcoDataEntity {
 
     public void setPrimarniZdroj(String primarniZdroj) {
         this.primarniZdroj = primarniZdroj;
+    }
+
+    public Boolean getDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        isDeleted = deleted;
     }
 
     public static IcoDataEntity from(IcoData icoData)
