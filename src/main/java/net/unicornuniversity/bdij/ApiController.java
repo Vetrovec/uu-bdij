@@ -1,6 +1,5 @@
 package net.unicornuniversity.bdij;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import net.unicornuniversity.bdij.dtos.UpdateIcoDto;
 import net.unicornuniversity.bdij.entities.IcoDataEntity;
 import net.unicornuniversity.bdij.exceptions.InvalidIcoException;
@@ -27,9 +26,8 @@ public class ApiController {
     private IcoDataRepository icoDataRepository;
 
     @GetMapping("/{ico}")
-    public IcoData getIcoData(@PathVariable String ico) throws InvalidIcoException, NotFoundException, UnknownErrorException {
-        IcoDataEntity entity = getIcoDataEntityOrThrow(ico);
-
+    public IcoData getIcoData(@PathVariable String ico, @RequestParam(required = false, defaultValue = "false") boolean forceLoad) throws InvalidIcoException, NotFoundException, UnknownErrorException {
+        IcoDataEntity entity = getIcoDataEntityOrThrow(ico, forceLoad);
         return IcoData.from(entity);
     }
 
@@ -61,10 +59,6 @@ public class ApiController {
     public void deleteIcoData(@PathVariable String ico) throws InvalidIcoException, NotFoundException, UnknownErrorException, OperationForbiddenException {
 
         IcoDataEntity entity = getIcoDataEntityOrThrow(ico);
-
-        if (entity.getDeleted()) {
-            throw new OperationForbiddenException("Operation forbidden for ICO: " + ico);
-        }
 
         entity.setDeleted(true);
         icoDataRepository.save(entity);
@@ -118,19 +112,24 @@ public class ApiController {
             throw new UnknownErrorException("An error occurred while searching for:" + name, e);
         }
     }
-
     private IcoDataEntity getIcoDataEntityOrThrow(String ico) throws InvalidIcoException, NotFoundException, UnknownErrorException {
+        return getIcoDataEntityOrThrow(ico, false);
+    }
+
+    private IcoDataEntity getIcoDataEntityOrThrow(String ico, boolean forceLoad) throws InvalidIcoException, NotFoundException, UnknownErrorException {
         if (!ico.matches("\\d{8}")) {
             throw new InvalidIcoException("ICO must be an 8-digit number: " + ico);
         }
 
-        Optional<IcoDataEntity> optionalEntity = icoDataRepository.findById(ico);
-        if (optionalEntity.isPresent()) {
-            if (optionalEntity.get().getDeleted()) {
-                throw new NotFoundException("Data not found for ICO: " + ico);
-            }
+        if (!forceLoad) {
+            Optional<IcoDataEntity> optionalEntity = icoDataRepository.findById(ico);
+            if (optionalEntity.isPresent()) {
+                if (optionalEntity.get().getDeleted()) {
+                    throw new NotFoundException("Data not found for ICO: " + ico);
+                }
 
-            return optionalEntity.get();
+                return optionalEntity.get();
+            }
         }
 
         RestTemplate restTemplate = new RestTemplate();
