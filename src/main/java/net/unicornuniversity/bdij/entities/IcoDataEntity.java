@@ -135,8 +135,8 @@ public class IcoDataEntity {
         this.primarniZdroj = primarniZdroj;
     }
 
-    public Boolean getDeleted() {
-        return isDeleted;
+    public boolean getDeleted() {
+        return isDeleted != null && isDeleted;
     }
 
     public void setDeleted(Boolean deleted) {
