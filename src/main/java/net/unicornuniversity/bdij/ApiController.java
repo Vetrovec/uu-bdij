@@ -3,12 +3,13 @@ package net.unicornuniversity.bdij;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import net.unicornuniversity.bdij.entities.IcoDataEntity;
+import net.unicornuniversity.bdij.exceptions.NotFoundException;
+import net.unicornuniversity.bdij.exceptions.OperationForbiddenException;
 import net.unicornuniversity.bdij.models.IcoData;
 import net.unicornuniversity.bdij.repositories.IcoDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Optional;
@@ -39,19 +40,7 @@ public class ApiController {
     @PatchMapping("/{ico}")
     public IcoDataEntity patchIcoData(@PathVariable String ico, HttpServletRequest request) throws IOException
     {
-        Optional<IcoDataEntity> optionalEntity = icoDataRepository.findById(ico);
-        if (optionalEntity.isEmpty())
-        {
-            // TODO: Not found exception with handling
-            throw new RuntimeException("Not found");
-        }
-
-        IcoDataEntity entity = optionalEntity.get();
-        if (entity.getDeleted())
-        {
-            // TODO: Operation forbidden exception with handling
-            throw new RuntimeException("Operation forbidden");
-        }
+        IcoDataEntity entity = getEntityOrThrow(ico);
 
         BufferedReader reader = request.getReader();
         IcoDataEntity updatedEntity = objectMapper.readerForUpdating(entity).readValue(reader);
@@ -65,6 +54,20 @@ public class ApiController {
 
         icoDataRepository.save(entity);
         return icoData;
+    }
+
+    private IcoDataEntity getEntityOrThrow(String ico) {
+        Optional<IcoDataEntity> optionalEntity = icoDataRepository.findById(ico);
+        if (optionalEntity.isEmpty()) {
+            throw new NotFoundException("Entity not found");
+        }
+
+        IcoDataEntity entity = optionalEntity.get();
+        if (entity.getDeleted()) {
+            throw new OperationForbiddenException("Operation forbidden on deleted entity");
+        }
+
+        return entity;
     }
 
     @DeleteMapping("/{ico}")
