@@ -7,9 +7,6 @@ import net.unicornuniversity.bdij.models.IcoData;
 @Table(name = "ico_data")
 public class IcoDataEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
     private String ico;
     private String obchodniJmeno;
     private String kodStatu;
@@ -25,12 +22,12 @@ public class IcoDataEntity {
     private String stavZdrojeVr;
     private String primarniZdroj;
 
-    public void setId(Long id) {
-        this.id = id;
+    public String getIco() {
+        return ico;
     }
 
-    public Long getId() {
-        return id;
+    public void setIco(String ico) {
+        this.ico = ico;
     }
 
     public String getObchodniJmeno() {
@@ -162,14 +159,6 @@ public class IcoDataEntity {
         }
 
         return entity;
-    }
-
-    public String getIco() {
-        return ico;
-    }
-
-    public void setIco(String ico) {
-        this.ico = ico;
     }
 }
 
